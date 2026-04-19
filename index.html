@@ -1,21 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>JPG to PDF</title>
-    
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JPG to PDF | Professional Image Converter</title>
-    
+
+    <link rel="manifest" href="https://progressier.app/3AYSdQr9zWhlIBP2y0Vc/progressier.json" />
+    <script defer src="https://progressier.app/3AYSdQr9zWhlIBP2y0Vc/script.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -43,7 +36,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
             border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             width: 95%;
             max-width: 500px;
             text-align: center;
@@ -59,7 +52,11 @@
             letter-spacing: 2px;
         }
 
-        p.subtitle { color: #94a3b8; font-size: 0.95rem; margin-bottom: 30px; }
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
 
         .upload-area {
             border: 2px dashed rgba(0, 255, 136, 0.3);
@@ -76,7 +73,9 @@
             transform: translateY(-5px);
         }
 
-        #fileInput { display: none; }
+        #fileInput {
+            display: none;
+        }
 
         .main-btn {
             background: linear-gradient(135deg, #00ff88 0%, #00bd65 100%);
@@ -114,7 +113,7 @@
             height: 60px;
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.05);
+            border: 2px solid rgba(255, 255, 255, 0.05);
         }
 
         .success-msg {
@@ -128,112 +127,114 @@
             animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>JPG to PDF</h1>
-    <p class="subtitle">Convert and merge your images into one high-quality PDF document instantly.</p>
+    <div class="container">
+        <h1>JPG to PDF</h1>
+        <p class="subtitle">Convert and merge your images into one high-quality PDF document instantly.</p>
 
-    <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-        <div style="margin-top: 15px; font-weight: 500;">Select JPG images</div>
+        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <div style="margin-top: 15px; font-weight: 500;">Select JPG images</div>
+        </div>
+
+        <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this.files)">
+
+        <div id="preview"></div>
+
+        <button id="actionBtn" class="main-btn" onclick="processImages()">Convert Images to PDF</button>
+
+        <div id="successBox" class="success-msg">
+            Conversion Successful! Your PDF is ready for download. ✅
+        </div>
     </div>
 
-    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleFiles(this.files)">
+    <script>
+        let selectedImages = [];
+        let pdfDocument = null;
 
-    <div id="preview"></div>
+        function handleFiles(files) {
+            const preview = document.getElementById('preview');
+            const actionBtn = document.getElementById('actionBtn');
+            const successBox = document.getElementById('successBox');
 
-    <button id="actionBtn" class="main-btn" onclick="processImages()">Convert Images to PDF</button>
+            preview.innerHTML = '';
+            selectedImages = [];
+            successBox.style.display = 'none';
 
-    <div id="successBox" class="success-msg">
-    Conversion Successful! Your PDF is ready for download. ✅
-</div>
+            if (files.length > 0) {
+                actionBtn.style.display = 'block';
+                actionBtn.innerText = 'Generate PDF Now';
+                actionBtn.style.background = 'linear-gradient(135deg, #00ff88 0%, #00bd65 100%)';
+                actionBtn.onclick = processImages;
 
-</div>
-
-<script>
-    let selectedImages = [];
-    let pdfDocument = null;
-
-    function handleFiles(files) {
-        const preview = document.getElementById('preview');
-        const actionBtn = document.getElementById('actionBtn');
-        const successBox = document.getElementById('successBox');
-        
-        preview.innerHTML = '';
-        selectedImages = [];
-        successBox.style.display = 'none';
-        
-        if (files.length > 0) {
-            actionBtn.style.display = 'block';
-            actionBtn.innerText = 'Generate PDF Now';
-            actionBtn.style.background = 'linear-gradient(135deg, #00ff88 0%, #00bd65 100%)';
-            actionBtn.onclick = processImages;
-
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    selectedImages.push(e.target.result);
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'preview-img';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-    }
-
-    async function processImages() {
-        const { jsPDF } = window.jspdf;
-        const btn = document.getElementById('actionBtn');
-        const successBox = document.getElementById('successBox');
-        
-        btn.innerText = 'Processing your PDF...';
-        btn.disabled = true;
-
-        const doc = new jsPDF();
-        
-        // معالجة الصور وإضافتها للـ PDF
-        for (let i = 0; i < selectedImages.length; i++) {
-            if (i > 0) doc.addPage();
-            
-            const imgProps = doc.getImageProperties(selectedImages[i]);
-            const pdfWidth = doc.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            
-            doc.addImage(selectedImages[i], 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        selectedImages.push(e.target.result);
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'preview-img';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
         }
 
-        pdfDocument = doc; // حفظ الملف في الذاكرة للتحميل
+        async function processImages() {
+            const { jsPDF } = window.jspdf;
+            const btn = document.getElementById('actionBtn');
+            const successBox = document.getElementById('successBox');
 
-        // تحديث الواجهة بعد النجاح
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.innerText = 'Download PDF';
-            btn.style.background = 'linear-gradient(135deg, #60efff 0%, #0061ff 100%)'; // تغيير اللون للتميز
-            successBox.style.display = 'block';
-            
-            // تغيير وظيفة الزرار للتحميل الفعلي
-            btn.onclick = () => {
-                pdfDocument.save('Mina_Professional_Project.pdf');
+            btn.innerText = 'Processing your PDF...';
+            btn.disabled = true;
+
+            const doc = new jsPDF();
+
+            for (let i = 0; i < selectedImages.length; i++) {
+                if (i > 0) doc.addPage();
+
+                const imgProps = doc.getImageProperties(selectedImages[i]);
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                doc.addImage(selectedImages[i], 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            }
+
+            pdfDocument = doc;
+
+            setTimeout(() => {
+                btn.disabled = false;
                 btn.innerText = 'Download PDF';
-                btn.onclick = () => location.reload();
-            };
-        }, 1500);
-    }
-</script>
+                btn.style.background = 'linear-gradient(135deg, #60efff 0%, #0061ff 100%)';
+                successBox.style.display = 'block';
+
+                btn.onclick = () => {
+                    pdfDocument.save('Mina_Professional_Project.pdf');
+                    btn.innerText = 'Start New Project';
+                    btn.onclick = () => location.reload();
+                };
+            }, 1500);
+        }
+    </script>
 
 </body>
-</html>
-    
-  </body>
-  
 </html>
